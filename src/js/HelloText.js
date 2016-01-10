@@ -6,6 +6,6 @@ export default class HelloText extends React.Component {
   }
 
   render() {
-    return <p>Hello, {this.props.name}!</p>
+    return <p>Hello, {this.props.name}! Please enter your search here</p>
   }
 }
