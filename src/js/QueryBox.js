@@ -11,15 +11,12 @@ var QueryBox = React.createClass({
     });
   },
 
-  componentDidMount: function() {
-    $('input').focus();
-  },
-
   setMovieData: function(data) {
     if (this.isMounted() && data.Response === "True") {
       this.setState({
         movieData: data
       });
+      $('input').val("");
     } else {
       $('input').addClass("error");
     }
@@ -32,10 +29,14 @@ var QueryBox = React.createClass({
     });
   },
 
+  componentDidMount: function() {
+    $('input[name="query"]').focus();
+  },
+
   render: function() {
     let form = <div className='search-field'>
       <div className='search'>
-        <input type='text' onChange={this.handleChange} placeholder='movie name'/>
+        <input type='text' name='query' onChange={this.handleChange} placeholder='MOVIE TITLE'/>
         <button onClick={this.queryForMovie}>SEARCH</button>
       </div>
     </div>

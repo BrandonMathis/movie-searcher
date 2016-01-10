@@ -10,7 +10,7 @@ export default class AppBody extends React.Component {
     return <div className='main'>
       <header>
         <div className='title'>
-          <h1>Film Search</h1>
+          <h1>FILM SEARCH</h1>
         </div>
       </header>
       <QueryBox />
