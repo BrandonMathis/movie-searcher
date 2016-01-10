@@ -1,74 +1,97 @@
 import React from 'react';
-import HelloText from './HelloText';
 import imdb from 'imdb-api';
+import $ from 'jquery';
 
-export default class QueryBox extends React.Component {
-  constructor() {
-    super();
-  }
-
-  componentDidMount() {
-    imdb.getReq({ name: 'Star Wars VII'}, (err, things) => {
-      console.log(things);
+var QueryBox = React.createClass({
+  queryForMovie(query) {
+    $.ajax({
+      url: "http://www.omdbapi.com/?tomatoes=true&t=" + this.state.movieQuery,
+        dataType: 'json',
+        success: this.setMovieData
     });
-  }
+  },
 
-  render() {
-    return <div className='query-box'>
-      <div className='search-field'>
-        <label>
-          <HelloText name='Brandon' />
-        </label>
-        <div className='search'>
-          <input type='text' placeholder='movie name'/>
-        </div>
-      </div>
-      <div className='movie-details'>
-        <div className='movie-summary'>
-          <h2>Summary</h2>
-          <div className='movie-summary-body'>
-            Obi-Wan Kenobi (Ewan McGregor) is a young apprentice Jedi knight under the tutelage of Qui-Gon Jinn (Liam Neeson) ; Anakin Skywalker (Jake Lloyd), who will later father Luke Skywalker and become known as Darth Vader, is just a 9-year-old boy. When the Trade Federation cuts off all routes to the planet Naboo, Qui-Gon and Obi-Wan are assigned to settle the matter.
-          </div>
-        </div>
-        <div className='movie-ratings'>
-          <h2>Ratings</h2>
-          <table>
-            <tr>
-              <td>IMDB Score</td>
-              <td>★★★★★★★★☆☆</td>
-            </tr>
-            <tr>
-              <td>Metacritic Score</td>
-              <td>81 / 100</td>
-            </tr>
-            <tr>
-              <td>Rotten Tomatoes</td>
-              <td>98%</td>
-            </tr>
-          </table>
-        </div>
-        <div className='movie-crew'>
-          <h2>Crew</h2>
-          <ul>
-            <li>
-              <span className='title'>Director</span>:&nbsp;
-              <a href='#'>J.J. Abrams</a>
-            </li>
-            <li>
-              <span className='title'>Actor</span>:&nbsp;
-              <a href='#'>Harrison Form</a>
-            </li>
-            <li>
-              <span className='title'>Actor</span>:&nbsp;
-              <a href='#'>Mark Hamill</a>
-            </li>
-            <li>
-              <span className='title'>Actor</span>:&nbsp;
-              <a href='#'>Carrie Fisher</a>
-            </li>
-          </ul>
-        </div>
+  componentDidMount: function() {
+    $('input').focus();
+  },
+
+  setMovieData: function(data) {
+    if (this.isMounted() && data.Response === "True") {
+      this.setState({
+        movieData: data
+      });
+    } else {
+      $('input').addClass("error");
+    }
+    $('input').focus();
+  },
+
+  handleChange: function(event) {
+    this.setState({
+      movieQuery: event.target.value
+    });
+  },
+
+  render: function() {
+    let form = <div className='search-field'>
+      <div className='search'>
+        <input type='text' onChange={this.handleChange} placeholder='movie name'/>
+        <button onClick={this.queryForMovie}>SEARCH</button>
       </div>
     </div>
+
+    if(this.state === null || typeof(this.state.movieData) === "undefined"){
+      return <div className='query-box'>
+        {form}
+      </div>
+    } else
+    {
+      return <div className='query-box'>
+        {form}
+        <div className='movie-details'>
+          <h2 className='movie-title'>{this.state.movieData.Title}</h2>
+          <div className='movie-summary'>
+            <h2>Summary</h2>
+            <div className='movie-summary-body'>
+              {this.state.movieData.Plot}
+            </div>
+          </div>
+          <div className='movie-ratings'>
+            <h2>Ratings</h2>
+            <table>
+              <tr>
+                <td>IMDB Score</td>
+                <td>{this.state.movieData.imdbRating}</td>
+              </tr>
+              <tr>
+                <td>Metacritic Score</td>
+                <td>{this.state.movieData.Metascore} / 100</td>
+              </tr>
+              <tr>
+                <td>Rotten Tomatoes</td>
+                <td>{this.state.movieData.tomatoMeter}%</td>
+              </tr>
+            </table>
+          </div>
+          <div className='movie-crew'>
+            <h2>Crew</h2>
+            <ul>
+              <li>
+                <span className='title'>Director</span>:&nbsp;
+                <a href='#'>{this.state.movieData.Director}</a>
+              </li>
+              {this.state.movieData.Actors.split(",").map(function(object, i){
+              return <li>
+                <span className='title'>Actor</span>:&nbsp;
+                <a href='#'>{object}</a>
+              </li>
+              })}
+            </ul>
+          </div>
+        </div>
+      </div>
+    }
   }
-}
+});
+
+export default QueryBox;

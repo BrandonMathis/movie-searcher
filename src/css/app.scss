@@ -28,22 +28,53 @@ header {
 }
 
 .query-box {
-  margin-bottom: 30px;
+  margin: 30px 0px;
 }
 
 .search-field {
   text-align: center;
   margin: 0 20px;
 
+  button {
+    padding: 5px 25px;
+    line-height: 1.8;
+    appearance: none;
+    box-shadow: none;
+    background-color: $dark-grey;
+    color: white;
+    border: 0px;
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+
+  button:focus {
+    outline: none !important;
+    box-shadow: 0 0 10px $dark-grey;
+  }
+
   input {
     width: 100%;
     height: 30px;
     padding: 0px;
     border: 0px;
+    background-color: $red;
+    border-bottom: 1px solid white;
+    box-shadow: 0px;
+    color: white;
+    margin-bottom: 10px;
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  input.error {
+    background-color: $red;
   }
 
   input::placeholder {
     text-align: center;
+    color: white;
   }
 }
 
